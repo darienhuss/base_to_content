@@ -22,13 +22,19 @@ def longest(a, b):
 
 def main():
 	parser = argparse.ArgumentParser(description='Create three possible base64 contents based on given string')
-	parser.add_argument('-s','--stringplain',help='Plaintext string',required=True)
+	group = parser.add_mutually_exclusive_group(required=True)
+	group.add_argument('-s','--stringplain',help='Plaintext string')
 	parser.add_argument('-c','--customalphabet',help='Specify a custom alphabet',required=False)
 	parser.add_argument('-32','--base32',help='Use base32 instead of base64',action='store_true',required=False)
 	parser.add_argument('-u','--unicode',help='String is unicode',action='store_true',required=False)
+	group.add_argument('-in', '--input',help='Input a file to encode',type=argparse.FileType('r'))
 	args = parser.parse_args()
 
-	string_to_encode = args.stringplain
+	if args.stringplain:
+		string_to_encode = args.stringplain
+	elif args.input:
+		string_to_encode = args.input.read()
+		
 	base32 = args.base32
 	if base32:
 		standard_base = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567' #standard base32 alphabet
